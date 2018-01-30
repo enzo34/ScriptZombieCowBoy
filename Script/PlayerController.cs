@@ -7,13 +7,19 @@ public class PlayerController : MonoBehaviour {
     public int jump = 300;
     public bool isGrounded = false;
 
+    public AudioClip soundJump;
+    public AudioClip soundDead;
+
     private bool isJumping = false;
+
     private Animator Anim;
+    private AudioSource Audio;
 
     // A l'initialisation du jeu
 	void Start ()
     {
-        Anim = GetComponent<Animator>();    
+        Anim = GetComponent<Animator>();
+        Audio = GetComponent<AudioSource>();
 	}
 	
 
@@ -37,6 +43,12 @@ public class PlayerController : MonoBehaviour {
         {
             Anim.SetBool("Walk", false);
         }
+
+        // Méthode temporaire pour tester la mort fu personnage
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            PlayerDead();
+        }
 	}
 
 
@@ -45,9 +57,16 @@ public class PlayerController : MonoBehaviour {
     {
         if(Input.GetButtonDown("Jump") && isGrounded)
         {
+            Audio.PlayOneShot(soundJump);
             GetComponent<Rigidbody2D>().velocity = Vector2.up * jump * Time.deltaTime;
             Anim.SetTrigger("Jump");
             Anim.SetBool("Walk", false);
         }
+    }
+
+    public void PlayerDead ()
+    {
+        Anim.SetTrigger("Dead");
+        Audio.PlayOneShot(soundDead);
     }
 }
